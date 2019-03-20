@@ -17,23 +17,23 @@ def mars_hemi(hemisphere, browser):
     return hemi_img["href"]
 
 def scrape():
-    executable_path={"executable_path": "/usr/local/bin/chromedriver"}
+    executable_path={"executable_path": "users\spitc\anaconda3\lib\site"}
     browser=Browser("chrome", **executable_path, headless=False)
 
-    #article title
+    # title
     url="https://mars.nasa.gov/news/"
     browser.visit(url)
     html=browser.html
     soup=bs(html, "html.parser")
     title=soup.find("div", class_="content_title").text
-    #article paragraph
+    # paragraph
     browser.click_link_by_text(title)
     html=browser.html
     soup=bs(html, "html.parser")
     paragraph=soup.find("div", class_="wysiwyg_content")
     para=paragraph.find('p').text
 
-    #mars picture
+    # picture
     url_image="https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars"
     home_url='https://www.jpl.nasa.gov'
     browser.visit(url_image)
@@ -43,15 +43,13 @@ def scrape():
     mars_src=mars_img.find("a")
     mars_src["data-fancybox-href"]
     featured_image_url=home_url+mars_src["data-fancybox-href"]
-
-    #mars weather
+    # weathr
     url_weather="https://twitter.com/marswxreport?lang=en"
     browser.visit(url_weather)
     html=browser.html
     soup=bs(html, "html.parser")
     mars_w=soup.find("div", class_="js-tweet-text-container").text.rstrip()
-
-    #mars facts
+    # facts
     facts_url="https://space-facts.com/mars/"
     mars_table=pd.read_html(facts_url)
     df=mars_table[0]
@@ -59,13 +57,11 @@ def scrape():
     df_facts=df.set_index('Measurements')
     mars_facts=df_facts.to_html()
     mars_facts_final=mars_facts.replace('\n','')
-
-    #mars hemisphere
+    # hemi
     cerberus_link=mars_hemi("Cerberus", browser)
     schiaparelli_link=mars_hemi("Schiaparelli", browser)
     syrtis_major_link=mars_hemi("Syrtis Major",browser)
     valles_marineris_link=mars_hemi("Valles Marineris", browser)
-
     hemisphere_image_urls=[
     {"title": "Valles_Marineris_Hemisphere", "img_url":valles_marineris_link},
     {"title": "Cerberus_Hemisphere", "img_url":cerberus_link},
